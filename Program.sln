@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChislenieMetodyAnalyzaIAlgebry", "ChislenieMetodyAnalyzaIAlgebry\ChislenieMetodyAnalyzaIAlgebry.csproj", "{6AF263DF-378B-48CF-AFAA-24D52FFDFF66}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6AF263DF-378B-48CF-AFAA-24D52FFDFF66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AF263DF-378B-48CF-AFAA-24D52FFDFF66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AF263DF-378B-48CF-AFAA-24D52FFDFF66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6AF263DF-378B-48CF-AFAA-24D52FFDFF66}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
