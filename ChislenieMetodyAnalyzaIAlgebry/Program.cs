@@ -87,7 +87,8 @@ namespace Algorithms
           if( n+1 != matrix.GetLength(1)) //Условие размерности
           {
               Console.WriteLine("Array doesn't fit to this method");
-              return null;
+              Fill(matrixB,0);
+              return matrixB;
           }
           double[,] matrixA = new double[n, n];
           for (int i = 0; i < n; i++)
