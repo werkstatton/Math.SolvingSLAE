@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.IO;
+using System.Text.RegularExpressions;
 namespace Algorithms
 {
     internal abstract class Maths
@@ -15,14 +16,14 @@ namespace Algorithms
         {
             int n = matrix.GetLength(0); //Размерность
             double[,] matrixClone = new double[n, n + 1];
-            for (int i = 0; i < n; i++)
-                for (int j = 0; j < n + 1; j++)
+            for (var i = 0; i < n; i++)
+                for (var j = 0; j < n + 1; j++)
                     matrixClone[i, j] = matrix[i, j];
 
             // Прямой ход
-            for (int k = 0; k < n; k++) //k-номер строки
+            for (var k = 0; k < n; k++) //k-номер строки
             {
-                for (int i = 0; i < n + 1; i++)//i-номер столбца
+                for (var i = 0; i < n + 1; i++)//i-номер столбца
                 {
                     var c = (((i-1)!=-1)||(i+1)>=(n))?(i-1):(i+1);
                    if(matrix[k,k]==0)
@@ -33,8 +34,8 @@ namespace Algorithms
                            temp[r] = matrixClone[r,i];
                            matrixClone[r, i] = matrixClone[r, c];
                            matrixClone[r, c] = temp[r];
-                           for (int y = 0; y < n; y++) //Обновление
-                           for (int j = 0; j < n + 1; j++)
+                           for (var y = 0; y < n; y++) //Обновление
+                           for (var j = 0; j < n + 1; j++)
                                matrix[y, j] = matrixClone[y, j];
 
                        }
@@ -241,8 +242,8 @@ internal abstract class Program
 {
     public static void Main()
     {
-        Console.WriteLine("Enter size of matrix"); var n = Convert.ToInt32(Console.ReadLine());
-        var matrixText = System.IO.File.ReadAllText(@"/home/valery/Documents/c#/Math.SolvingSLAE/ChislenieMetodyAnalyzaIAlgebry/matrix.txt");
+        var matrixText = System.IO.File.ReadAllText(@Path.Combine(Directory.GetCurrentDirectory(),"matrix.txt"));
+        var n = Regex.Matches(matrixText,"\n").Count+1;
         var matrix = new double[n, n+1];
         var line = 0;
         foreach (var row in matrixText.Split('\n'))
@@ -263,8 +264,20 @@ internal abstract class Program
                 Console.Write(matrix[k,i]+" ");
             } Console.Write("\n");
         } //Создаём и печатаем новую матрицу
-    
-        var answer = Algorithms.Maths.Iteration(matrix, 0.00000000001);
+
+
+    Console.WriteLine("Enter method to solve this matrix \n 1. Method of Gauss \n 2. Method of Thomas \n 3.Method of Iteration");
+    var method = Console.ReadLine();;
+    var answer = new double[n];
+    switch (method)
+    {
+        case "1": answer = Algorithms.Maths.Gauss(matrix);break;
+        case "2": answer = Algorithms.Maths.Thomas(matrix); break;
+        case "3": Console.WriteLine("Enter accuracy"); var e = Convert.ToDouble(Console.ReadLine()); 
+        answer = Algorithms.Maths.Iteration(matrix, e); break;
+        default: Console.WriteLine("You need to write a number from 1 to 3"); break;
+    }
+        
         for(var i=0;i<n;i++)
             Console.WriteLine("x"+(i+1)+" : "+answer[i]);
 
