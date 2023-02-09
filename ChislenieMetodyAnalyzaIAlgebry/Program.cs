@@ -105,11 +105,13 @@ namespace Algorithms
               if(matrixA[i,i] < Math.Abs(matrixA[i,i-1])+Math.Abs(matrixA[i,i+1]))
               {
                 Console.WriteLine("Array doesn't fit to this method");
+                Fill(matrixB,0);
                 return matrixB;
               }
               if(matrixA[i,i]==0)
               {
                 Console.WriteLine("Array doesn't fit to this method");
+                Fill(matrixB,0);
                 return matrixB;
               }
             }
