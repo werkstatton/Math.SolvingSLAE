@@ -180,10 +180,19 @@ namespace Algorithms
               
               var maxNum = lineOfMatrix.Max(); //Получаем элемент i-ой строки с максимальным значением
               var indexOfMaxNum = lineOfMatrix.ToList().IndexOf(maxNum); //Получаем индекс этого элемента
-              if (!(Math.Abs(maxNum - matrix[i, i]) > 0) || indexOfMaxNum == i) continue; //Если максимальный элемент и так равен i-ому элементу i-ой строки, то идём на следующую 
-              
+              if(matrix[i,indexOfMaxNum] < sumOfLine[i]-matrix[i,indexOfMaxNum])
+              {
+                Console.WriteLine("Matrix doesn't fit to this method");
+                Fill(sumOfLine, 0);
+                return sumOfLine;
+              }
               for (var p = 0; p < m; p++)
-                  (matrix[i, p], matrix[indexOfMaxNum, p]) = (matrix[indexOfMaxNum, p], matrix[i, p]); //Меняем строки местами так, чтобы максимальный элемент i-ой строки стал диагональным в матрице
+              {
+                double temping = matrix[i, p];
+                matrix[i,p] = matrix[indexOfMaxNum,p];
+                matrix[indexOfMaxNum,p] = temping;    
+              } //Меняем строки местами так, чтобы максимальный элемент i-ой строки стал диагональным в матрице
+                         
           }
 
           var matrixA = new double[n, n];
@@ -233,7 +242,7 @@ internal abstract class Program
     public static void Main()
     {
         Console.WriteLine("Enter size of matrix"); var n = Convert.ToInt32(Console.ReadLine());
-        var matrixText = System.IO.File.ReadAllText(@"C:\Users\Valerok\RiderProjects\Program\ChislenieMetodyAnalyzaIAlgebry\matrix.txt");
+        var matrixText = System.IO.File.ReadAllText(@"/home/valery/Documents/c#/Math.SolvingSLAE/ChislenieMetodyAnalyzaIAlgebry/matrix.txt");
         var matrix = new double[n, n+1];
         var line = 0;
         foreach (var row in matrixText.Split('\n'))
