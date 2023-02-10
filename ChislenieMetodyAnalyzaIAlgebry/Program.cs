@@ -266,17 +266,17 @@ internal abstract class Program
         } //Создаём и печатаем новую матрицу
 
 
-    Console.WriteLine("Enter method to solve this matrix \n 1. Method of Gauss \n 2. Method of Thomas \n 3.Method of Iteration");
-    var method = Console.ReadLine();;
-    var answer = new double[n];
-    switch (method)
-    {
-        case "1": answer = Algorithms.Maths.Gauss(matrix);break;
-        case "2": answer = Algorithms.Maths.Thomas(matrix); break;
-        case "3": Console.WriteLine("Enter accuracy"); var e = Convert.ToDouble(Console.ReadLine()); 
-        answer = Algorithms.Maths.Iteration(matrix, e); break;
-        default: Console.WriteLine("You need to write a number from 1 to 3"); break;
-    }
+        Console.WriteLine("Enter method to solve this matrix \n 1. Method of Gauss \n 2. Method of Thomas \n 3.Method of Iteration");
+        var method = Console.ReadLine();;
+        var answer = new double[n];
+        switch (method)
+        {
+            case "1": answer = Algorithms.Maths.Gauss(matrix);break;
+            case "2": answer = Algorithms.Maths.Thomas(matrix); break;
+            case "3": Console.WriteLine("Enter accuracy"); var e = Convert.ToDouble(Console.ReadLine()); 
+                answer = Algorithms.Maths.Iteration(matrix, e); break;
+            default: Console.WriteLine("You need to write a number from 1 to 3"); break;
+        }
         
         for(var i=0;i<n;i++)
             Console.WriteLine("x"+(i+1)+" : "+answer[i]);
