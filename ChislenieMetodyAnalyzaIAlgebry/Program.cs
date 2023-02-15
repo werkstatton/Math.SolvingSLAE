@@ -234,15 +234,10 @@ namespace Algorithms
                 array[i] = value;
             }
         }
-    }
-}
 
-
-internal abstract class Program
-{
-    public static void Main()
-    {
-        var matrixText = System.IO.File.ReadAllText(@Path.Combine(Directory.GetCurrentDirectory(),"matrix.txt"));
+        public static void SolveSLAU()
+        {
+            var matrixText = System.IO.File.ReadAllText(@Path.Combine(Directory.GetCurrentDirectory(),"matrix.txt"));
         var n = Regex.Matches(matrixText,"\n").Count+1;
         var matrix = new double[n, n+1];
         var line = 0;
@@ -281,5 +276,17 @@ internal abstract class Program
         for(var i=0;i<n;i++)
             Console.WriteLine("x"+(i+1)+" : "+answer[i]);
 
+        }
+    }
+}
+
+
+internal abstract class Program
+{
+    public static void Main()
+    {
+      Algorithms.Maths.SolveSLAU();
+
+      
     }
 }
