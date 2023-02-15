@@ -242,7 +242,7 @@ namespace Algorithms
             var matrixTxtPath = @Path.Combine(Directory.GetCurrentDirectory(),"matrix.txt");
             if (File.Exists(matrixTxtPath))
             {
-                matrixText = System.IO.File.ReadAllText(matrixTxtPath);
+                matrixText = File.ReadAllText(matrixTxtPath);
             }
             else
             {
@@ -253,7 +253,7 @@ namespace Algorithms
                         "1 0 0 1 \n 1 0 1 1 \n 1 0 0 1");    
                     fs.Write(title, 0, title.Length);
                 }    
-                matrixText = System.IO.File.ReadAllText(matrixTxtPath);
+                matrixText = File.ReadAllText(matrixTxtPath);
             }
             Console.WriteLine("If you want to change matrix, go to "+matrixTxtPath);
             var n = Regex.Matches(matrixText,"\n").Count+1;
@@ -280,7 +280,7 @@ namespace Algorithms
 
 
             Console.WriteLine("Enter method to solve this matrix \n 1. Method of Gauss \n 2. Method of Thomas \n 3.Method of Iteration");
-            var method = Console.ReadLine();;
+            var method = Console.ReadLine();
             var answer = new double[n];
             switch (method)
             {
