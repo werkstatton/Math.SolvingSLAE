@@ -13,7 +13,7 @@ namespace Algorithms
         /// </summary>
         /// <param name="matrix">Начальная матрица</param>
         /// <returns></returns>
-        public static double[] Gauss(double[,] matrix)
+        private static double[] Gauss(double[,] matrix)
         {
             int n = matrix.GetLength(0); //Размерность
             double[,] matrixClone = new double[n, n + 1];
@@ -83,26 +83,26 @@ namespace Algorithms
             return answer;
         }
 
-        public static double[] Thomas(double[,] matrix)
+        private static double[] Thomas(double[,] matrix)
         {
-          int n = matrix.GetLength(0); //Размерность
+          var n = matrix.GetLength(0); //Размерность
           if( n+1 != matrix.GetLength(1)) //Условие размерности
           {
               Console.WriteLine("Array doesn't fit to this method");
               return null;
           }
-          double[,] matrixA = new double[n, n];
-          for (int i = 0; i < n; i++)
-              for (int j = 0; j < n; j++)
+          var matrixA = new double[n, n];
+          for (var i = 0; i < n; i++)
+              for (var j = 0; j < n; j++)
                   matrixA[i, j] = matrix[i, j];
 
-          double[] matrixB = new double[n];
-            for (int i = 0; i < n; i++)
+          var matrixB = new double[n];
+            for (var i = 0; i < n; i++)
               matrixB[i]=matrix[i,n];
 
-          for(int i=1;i<n-1;i++)
+          for(var i=1;i<n-1;i++)
           {
-            for(int j=1;j<n-1;j++)
+            for(var j=1;j<n-1;j++)
             {
               if(matrixA[i,i] < Math.Abs(matrixA[i,i-1])+Math.Abs(matrixA[i,i+1]))
               {
@@ -119,8 +119,8 @@ namespace Algorithms
             }
           }
 
-          double[] u = new double[n];
-          double[] v = new double[n];
+          var u = new double[n];
+          var v = new double[n];
 
           //Первая строка матрицы
           v[0] = matrixA[0,1]/(-matrixA[0,0]);
@@ -138,9 +138,9 @@ namespace Algorithms
 
 
                   // Отделяем от общей матрицы ответы
-                  double[] answer = new double[n];
+                  var answer = new double[n];
                   answer[n-1]=u[n-1];
-                  for (int i = n-1; i > 0; i--)
+                  for (var i = n-1; i > 0; i--)
                       answer[i-1] =v[i-1]*answer[i]+u[i-1];
 
                   return answer;
@@ -149,7 +149,7 @@ namespace Algorithms
         public static double SinTailor(int a, double n)
         {
           double result=0;
-          for(int i=0; i<a; i++)
+          for(var i=0; i<a; i++)
           {
             result += (Math.Pow(-1,i)*Math.Pow(n,(2*i+1)))/Factorial(2*i+1);
           }
@@ -163,7 +163,7 @@ namespace Algorithms
             return n * Factorial(n - 1);
         }
 
-        public static double[] Iteration(double[,] matrix, double e)
+        private static double[] Iteration(double[,] matrix, double e)
         {
           var n = matrix.GetLength(0); //Строки
           var m = matrix.GetLength(1); //Столбцы + В
@@ -190,7 +190,7 @@ namespace Algorithms
               }
               for (var p = 0; p < m; p++)
               {
-                double temping = matrix[i, p];
+                var temping = matrix[i, p];
                 matrix[i,p] = matrix[indexOfMaxNum,p];
                 matrix[indexOfMaxNum,p] = temping;    
               } //Меняем строки местами так, чтобы максимальный элемент i-ой строки стал диагональным в матрице
@@ -279,7 +279,7 @@ namespace Algorithms
             } //Создаём и печатаем новую матрицу
 
 
-            Console.WriteLine("Enter method to solve this matrix \n 1. Method of Gauss \n 2. Method of Thomas \n 3.Method of Iteration");
+            Console.WriteLine("Enter method to solve this matrix \n 1. Method of Gauss \n 2. Method of Thomas \n 3.Method of Iteration \n 4.Exit");
             var method = Console.ReadLine();
             var answer = new double[n];
             switch (method)
@@ -288,6 +288,7 @@ namespace Algorithms
                 case "2": answer = Algorithms.Maths.Thomas(matrix); break;
                 case "3": Console.WriteLine("Enter accuracy"); var e = Convert.ToDouble(Console.ReadLine()); 
                     answer = Algorithms.Maths.Iteration(matrix, e); break;
+                case "4": return;
                 default: Console.WriteLine("You need to write a number from 1 to 3"); break;
             }
         
