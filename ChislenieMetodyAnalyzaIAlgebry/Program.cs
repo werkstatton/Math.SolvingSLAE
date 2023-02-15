@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
 namespace Algorithms
 {
@@ -235,48 +236,66 @@ namespace Algorithms
             }
         }
 
-        public static void SolveSLAU()
+        public static void SolveSlau()
         {
-            var matrixText = System.IO.File.ReadAllText(@Path.Combine(Directory.GetCurrentDirectory(),"matrix.txt"));
-        var n = Regex.Matches(matrixText,"\n").Count+1;
-        var matrix = new double[n, n+1];
-        var line = 0;
-        foreach (var row in matrixText.Split('\n'))
-        {
-            var column = 0;
-            foreach (var col in row.Trim().Split(' '))
+            string matrixText;
+            var matrixTxtPath = @Path.Combine(Directory.GetCurrentDirectory(),"matrix.txt");
+            if (File.Exists(matrixTxtPath))
             {
-                matrix[line, column] = double.Parse(col.Trim());
-                column++;
+                matrixText = System.IO.File.ReadAllText(matrixTxtPath);
             }
-            line++;
-        }
-        
-        for (var k = 0; k < n; k++)
-        {
-            for (var i = 0; i < (n + 1); i++)
+            else
             {
-                Console.Write(matrix[k,i]+" ");
-            } Console.Write("\n");
-        } //Создаём и печатаем новую матрицу
+                using (var fs = File.Create(matrixTxtPath))     
+                {    
+                    // Add some text to file    
+                    var title = new UTF8Encoding(true).GetBytes(
+                        "1 0 0 1 \n 1 0 1 1 \n 1 0 0 1");    
+                    fs.Write(title, 0, title.Length);
+                }    
+                matrixText = System.IO.File.ReadAllText(matrixTxtPath);
+            }
+            Console.WriteLine("If you want to change matrix, go to "+matrixTxtPath);
+            var n = Regex.Matches(matrixText,"\n").Count+1;
+            var matrix = new double[n, n+1];
+            var line = 0;
+            foreach (var row in matrixText.Split('\n'))
+            {
+                var column = 0;
+                foreach (var col in row.Trim().Split(' '))
+                {
+                    matrix[line, column] = double.Parse(col.Trim());
+                    column++;
+                }
+                line++;
+            }
+        
+            for (var k = 0; k < n; k++)
+            {
+                for (var i = 0; i < (n + 1); i++)
+                {
+                    Console.Write(matrix[k,i]+" ");
+                } Console.Write("\n");
+            } //Создаём и печатаем новую матрицу
 
 
-        Console.WriteLine("Enter method to solve this matrix \n 1. Method of Gauss \n 2. Method of Thomas \n 3.Method of Iteration");
-        var method = Console.ReadLine();;
-        var answer = new double[n];
-        switch (method)
-        {
-            case "1": answer = Algorithms.Maths.Gauss(matrix);break;
-            case "2": answer = Algorithms.Maths.Thomas(matrix); break;
-            case "3": Console.WriteLine("Enter accuracy"); var e = Convert.ToDouble(Console.ReadLine()); 
-                answer = Algorithms.Maths.Iteration(matrix, e); break;
-            default: Console.WriteLine("You need to write a number from 1 to 3"); break;
+            Console.WriteLine("Enter method to solve this matrix \n 1. Method of Gauss \n 2. Method of Thomas \n 3.Method of Iteration");
+            var method = Console.ReadLine();;
+            var answer = new double[n];
+            switch (method)
+            {
+                case "1": answer = Algorithms.Maths.Gauss(matrix);break;
+                case "2": answer = Algorithms.Maths.Thomas(matrix); break;
+                case "3": Console.WriteLine("Enter accuracy"); var e = Convert.ToDouble(Console.ReadLine()); 
+                    answer = Algorithms.Maths.Iteration(matrix, e); break;
+                default: Console.WriteLine("You need to write a number from 1 to 3"); break;
+            }
+        
+            for(var i=0;i<n;i++)
+                Console.WriteLine("x"+(i+1)+" : "+answer[i]);
+
         }
         
-        for(var i=0;i<n;i++)
-            Console.WriteLine("x"+(i+1)+" : "+answer[i]);
-
-        }
     }
 }
 
@@ -285,7 +304,7 @@ internal abstract class Program
 {
     public static void Main()
     {
-      Algorithms.Maths.SolveSLAU();
+      Algorithms.Maths.SolveSlau();
 
       
     }
