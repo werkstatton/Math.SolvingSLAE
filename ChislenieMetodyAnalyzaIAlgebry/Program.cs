@@ -297,6 +297,30 @@ namespace Algorithms
 
         }
         
+        public static double F(double x)
+        {
+            return Math.Pow(x,3)-2*Math.Pow(x,2)-4*x+7;
+        }
+
+        public static double[,] FindRootRanges(double a, double b, double e)
+        {
+            var n = Convert.ToInt32(((b-a)/e)+1);
+            var numbers = new double[n+1];
+            var ranges = new double[n,2];
+            for(var i=0;i<=n;i++)
+                numbers[i] = a+e*(Convert.ToDouble(i)-1);
+            int c=0;
+            for(var i=1;i<=n;i++)
+            {
+                if(F(numbers[i-1])*F(numbers[i])<0)
+                {
+                    ranges[c,0]= numbers[i-1];
+                    ranges[c,1]=numbers[i];
+                    c++;
+                }
+            }
+            return ranges;
+        }
     }
 }
 
@@ -305,8 +329,17 @@ internal abstract class Program
 {
     public static void Main()
     {
-      Algorithms.Maths.SolveSlau();
+      var rang = Algorithms.Maths.FindRootRanges(-10,10,0.0001);
 
+     for(var i=0;i<rang.GetLength(0); i++)
+     {
+        for(var j=0; j<rang.GetLength(1);j++){
+            if(rang[i,0]!=0 && rang[i,1]!=0)
+                Console.Write(rang[i,j]+"\t");
+        }
+        if(rang[i,0]!=0)
+           Console.Write("\n"); 
+     }
       
     }
 }
