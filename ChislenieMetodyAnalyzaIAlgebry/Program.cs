@@ -8,11 +8,7 @@ namespace Algorithms
 {
     internal abstract class Maths
     {
-        /// <summary>
-        /// Метод Гаусса (Решение СЛАУ)
-        /// </summary>
-        /// <param name="matrix">Начальная матрица</param>
-        /// <returns></returns>
+
         private static double[] Gauss(double[,] matrix)
         {
             int n = matrix.GetLength(0); //Размерность
@@ -29,8 +25,8 @@ namespace Algorithms
                     var c = (((i-1)!=-1)||(i+1)>=(n))?(i-1):(i+1);
                    if(matrix[k,k]==0)
                    {
-                       double[] temp = new double[n];
-                       for(int r=0;r<n;r++)
+                       var temp = new double[n];
+                       for(var r=0;r<n;r++)
                        {
                            temp[r] = matrixClone[r,i];
                            matrixClone[r, i] = matrixClone[r, c];
@@ -296,10 +292,12 @@ namespace Algorithms
                 Console.WriteLine("x"+(i+1)+" : "+answer[i]);
 
         }
-        
-        public static double F(double x)
+
+        private static double F(double x)
         {
+            //You can change a formula here
             return Math.Pow(x,3)-2*Math.Pow(x,2)-4*x+7;
+            //You can change a formula here
         }
 
         public static double[,] FindRootRanges(double a, double b, double e)
@@ -309,15 +307,13 @@ namespace Algorithms
             var ranges = new double[n,2];
             for(var i=0;i<=n;i++)
                 numbers[i] = a+e*(Convert.ToDouble(i)-1);
-            int c=0;
+            var c=0;
             for(var i=1;i<=n;i++)
             {
-                if(F(numbers[i-1])*F(numbers[i])<0)
-                {
-                    ranges[c,0]= numbers[i-1];
-                    ranges[c,1]=numbers[i];
-                    c++;
-                }
+                if (!(F(numbers[i - 1]) * F(numbers[i]) < 0)) continue;
+                ranges[c,0]= numbers[i-1];
+                ranges[c,1]=numbers[i];
+                c++;
             }
             return ranges;
         }
