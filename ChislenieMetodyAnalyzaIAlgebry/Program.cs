@@ -85,7 +85,9 @@ namespace Algorithms
           if( n+1 != matrix.GetLength(1)) //Условие размерности
           {
               Console.WriteLine("Array doesn't fit to this method");
-              return null;
+              var temp = new double[1];
+              Fill(temp,0);
+              return temp;
           }
           var matrixA = new double[n, n];
           for (var i = 0; i < n; i++)
@@ -293,11 +295,16 @@ namespace Algorithms
 
         }
 
-        private static double F(double x)
+        private static double P(double x, double h)
         {
-            //You can change a formula here
-            return Math.Pow(x,3)-2*Math.Pow(x,2)-4*x+7;
-            //You can change a formula here
+            var p = (F(x+h)-F(x-h))/(2*h);
+            return p;
+        }
+
+        private static double P2(double x, double h)
+        {
+            var p2 = (F(x+h)-2*F(x)+F(x-h))/Math.Pow(h,2);
+            return p2;
         }
 
         public static double[,] FindRootRanges(double a, double b, double e)
@@ -317,7 +324,80 @@ namespace Algorithms
             }
             return ranges;
         }
+
+            public static double[] FindRoots(double[,] ranges)
+            {   
+                var e = 0.000001; //Точность всех операций
+                var n = ranges.GetLength(0); //Количество сегментов, которые нужны проверить
+                for(int i=0; i<n; i++) //Проверка на ненулевую первую производную
+                    for(var j=ranges[i,0]; j<ranges[i,1];j+=e)
+                    {
+                        if(P(j,e)==0)
+                        {
+                            Console.WriteLine("P(x) = 0, x belongs to [a,b]");
+                            var temp = new double[1];
+                            Fill(temp,0);
+                            return temp;
+                        }
+                    }
+                for(int i=0; i<n; i++) //Проверяем знакопостоянство первой и второй производной
+                { 
+                    var signs = new double[Convert.ToInt32((ranges[i,1]-ranges[i,0])/e+1)];
+                    var c=0;
+                    for(var j=ranges[i,0]; j<ranges[i,1];j+=e)
+                    {
+                        signs[c]= Math.Sign(P(j,e));
+                        c++;
+                    }
+                    for(var j=0; j<signs.GetLength(0)-1;j++)
+                    {
+                        if(signs[j]!=signs[j+1]) return new double[0];
+                    }
+                }
+                for(int i=0; i<n; i++)
+                { 
+                    var signs = new double[Convert.ToInt32((ranges[i,1]-ranges[i,0])/e+1)];
+                    var c=0;
+                    for(var j=ranges[i,0]; j<ranges[i,1];j+=e)
+                    {
+                        signs[c]= Math.Sign(P2(j,e));
+                        c++;
+                    }
+                    for(var j=0; j<signs.GetLength(0)-1;j++)
+                    {
+                        if(signs[j]!=signs[j+1]) return new double[0];
+                    }
+                }
+                
+                var roots = new double[n]; 
+                for(var i=0; i<n; i++) //Получение первого приближения корней 
+                {
+                    if(F(ranges[i,0])*P2(ranges[i,0],e)>0)
+                    {
+                        roots[i]=ranges[i,0];
+                    }
+                    else if(F(ranges[i,1])*P2(ranges[i,1],e)>0)
+                    {
+                        roots[i]=ranges[i,1];
+                    }
+                } 
+                    
+                for(var i=0; i<3;i++) //Итерационно приближаем корни
+                    for(var j=0;j<n;j++)
+                        roots[j] = roots[j] - (F(roots[j])/P(roots[j],e));
+
+                return roots;
+            }
+
+        private static double F(double x)
+        {
+            //You can change a formula here
+            return 0.89*Math.Pow(x,3)-2.8*Math.Pow(x,2)-3.7*x+11.2;
+            //You can change a formula here
+        }
     }
+
+
 }
 
 
@@ -325,17 +405,30 @@ internal abstract class Program
 {
     public static void Main()
     {
-      var rang = Algorithms.Maths.FindRootRanges(-10,10,0.0001);
-
-     for(var i=0;i<rang.GetLength(0); i++)
+      var range = Algorithms.Maths.FindRootRanges(-100,100,0.00001);
+      var c=0;
+     for(var i=0;i<range.GetLength(0); i++)
      {
-        for(var j=0; j<rang.GetLength(1);j++){
-            if(rang[i,0]!=0 && rang[i,1]!=0)
-                Console.Write(rang[i,j]+"\t");
+        for(var j=0; j<range.GetLength(1);j++){
+            if(range[i,0]!=0 && range[i,1]!=0)
+            {
+                c++;
+                Console.Write(range[i,j]+"\t");
+            }
         }
-        if(rang[i,0]!=0)
+        if(range[i,0]!=0)
            Console.Write("\n"); 
      }
-      
+      var ranges = new double[c/2,2];
+    for(var i=0;i<range.GetLength(0); i++)
+    {
+        for(var j=0; j<range.GetLength(1);j++){
+            if(range[i,0]!=0 && range[i,1]!=0)
+                ranges[i,j] = range[i,j];
+        }
+    }
+    var roots = Algorithms.Maths.FindRoots(ranges);
+    for(var i=0; i<roots.GetLength(0);i++)
+        Console.WriteLine("x"+(i+1)+": "+roots[i]+"\t");
     }
 }
