@@ -392,7 +392,7 @@ namespace Algorithms
         private static double F(double x)
         {
             //You can change a formula here
-            return 0.89*Math.Pow(x,3)-2.8*Math.Pow(x,2)-3.7*x+11.2;
+            return Math.Pow(x,2)-16;
             //You can change a formula here
         }
     }
@@ -405,30 +405,33 @@ internal abstract class Program
 {
     public static void Main()
     {
-      var range = Algorithms.Maths.FindRootRanges(-100,100,0.00001);
-      var c=0;
-     for(var i=0;i<range.GetLength(0); i++)
-     {
-        for(var j=0; j<range.GetLength(1);j++){
-            if(range[i,0]!=0 && range[i,1]!=0)
-            {
-                c++;
-                Console.Write(range[i,j]+"\t");
+        var e = 0.00001;
+        var range = Algorithms.Maths.FindRootRanges(-10,10,e);
+        var c=0;
+        Console.Write("Ranges of roots are: \n");
+        for(var i=0;i<range.GetLength(0); i++)
+        {
+            for(var j=0; j<range.GetLength(1);j++){
+                if(range[i,0]!=0 && range[i,1]!=0)
+                {
+                    c++;
+                    Console.Write(range[i,j]+"\t");
+                }
+            }
+            if(range[i,0]!=0)
+            Console.Write("\n"); 
+        }
+        var ranges = new double[c/2,2];
+        for(var i=0;i<range.GetLength(0); i++)
+        {
+            for(var j=0; j<range.GetLength(1);j++){
+                if(range[i,0]!=0 && range[i,1]!=0)
+                    ranges[i,j] = range[i,j];
             }
         }
-        if(range[i,0]!=0)
-           Console.Write("\n"); 
-     }
-      var ranges = new double[c/2,2];
-    for(var i=0;i<range.GetLength(0); i++)
-    {
-        for(var j=0; j<range.GetLength(1);j++){
-            if(range[i,0]!=0 && range[i,1]!=0)
-                ranges[i,j] = range[i,j];
-        }
-    }
-    var roots = Algorithms.Maths.FindRoots(ranges);
-    for(var i=0; i<roots.GetLength(0);i++)
-        Console.WriteLine("x"+(i+1)+": "+roots[i]+"\t");
+
+        var roots = Algorithms.Maths.FindRoots(ranges);
+        for(var i=0; i<roots.GetLength(0);i++)
+            Console.WriteLine("x"+(i+1)+": "+roots[i]+"\t");
     }
 }
