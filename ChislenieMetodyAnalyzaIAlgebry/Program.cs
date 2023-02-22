@@ -333,7 +333,7 @@ namespace Algorithms
                     for(var j=ranges[i,0]; j<ranges[i,1];j+=e)
                     {
                         if (P(j, e) != 0) continue;
-                        Console.WriteLine("P(x) = 0, x belongs to [a,b]");
+                        Console.WriteLine("P(x) = 0, x belongs to ["+ranges[i,0]+", "+ranges[i,1]+"]");
                         var temp = new double[1];
                         Fill(temp,0);
                         return temp;
