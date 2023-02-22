@@ -390,7 +390,7 @@ namespace Algorithms
         private static double F(double x)
         {
             //You can change a formula here
-            return Math.Log(x,2)+Math.Pow(x,2);
+            return 4*Math.Pow(x,3)-2*Math.Pow(x,2)-2*x+4;
             //You can change a formula here
         }
     }
@@ -403,8 +403,8 @@ internal abstract class Program
 {
     public static void Main()
     {
-        const double e = 0.01;
-        var range = Algorithms.Maths.FindRootRanges(-10,10,e);
+        const double e = 0.00001;
+        var range = Algorithms.Maths.FindRootRanges(-50,50,e);
         var c=0;
         Console.Write("Ranges of roots are: \n");
         for(var i=0;i<range.GetLength(0); i++)
