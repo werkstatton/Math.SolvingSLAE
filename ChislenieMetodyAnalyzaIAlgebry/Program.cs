@@ -301,6 +301,12 @@ namespace Algorithms
             return p;
         }
 
+        private static double Pminus(double x, double h)
+        {
+            var p = (Fminus(x+h)-Fminus(x-h))/(2*h);
+            return p;
+        }
+
         private static double P2(double x, double h)
         {
             var p2 = (F(x+h)-2*F(x)+F(x-h))/Math.Pow(h,2);
@@ -325,7 +331,7 @@ namespace Algorithms
             return ranges;
         }
 
-            public static double[] FindRoots(double[,] ranges)
+        public static double[] FindRootsNewton(double[,] ranges)
             {
                 const double e = 0.00001;
                 var n = ranges.GetLength(0); //Количество сегментов, которые нужны проверить
@@ -387,10 +393,131 @@ namespace Algorithms
                 return roots;
             }
 
+        public static double[] FindRootsMixed(double[,] ranges)
+        {
+                const double e = 0.00001;
+                var n = ranges.GetLength(0); //Количество сегментов, которые нужны проверить
+                for(var i=0; i<n; i++) //Проверка на ненулевую первую производную
+                    for(var j=ranges[i,0]; j<ranges[i,1];j+=e)
+                    {
+                        if (P(j, e) != 0) continue;
+                        Console.WriteLine("P(x) = 0, x belongs to ["+ranges[i,0]+", "+ranges[i,1]+"]");
+                        var temp = new double[1];
+                        Fill(temp,0);
+                        return temp;
+                    }
+                for(var i=0; i<n; i++) //Проверяем знакопостоянство первой и второй производной
+                { 
+                    var signs = new int[Convert.ToInt32((ranges[i,1]-ranges[i,0])/e+1)];
+                    var c=0;
+                    for(var j=ranges[i,0]; j<ranges[i,1];j+=e)
+                    {
+                        signs[c]= Math.Sign(P(j,e));
+                        c++;
+                    }
+                    for(var j=0; j<signs.GetLength(0)-1;j++)
+                    {
+                        if(signs[j]!=signs[j+1])
+                        {
+                            var temp = new double[n];
+                            Fill(temp,0);
+                            return temp;
+                        };
+                    }
+                }
+                for(var i=0; i<n; i++)
+                { 
+                    var signs = new int[Convert.ToInt32((ranges[i,1]-ranges[i,0])/e+1)];
+                    var c=0;
+                    for(var j=ranges[i,0]; j<ranges[i,1];j+=e)
+                    {
+                        signs[c]= Math.Sign(P2(j,e));
+                        c++;
+                    }
+                    for(var j=0; j<signs.GetLength(0)-1;j++)
+                    {
+                        if(signs[j]!=signs[j+1])
+                        {
+                            var temp = new double[n];
+                            Fill(temp,0);
+                            return temp;
+                        } 
+                    }
+                }
+                
+                var roots = new double[n];
+                Fill(roots,0);
+                for(var i=0;i<n;i++)
+                {
+                    var x0 = ranges[i,0];
+                    var x0d = ranges[i,1];
+                    bool flag1 = Math.Sign(P(ranges[i,0],e))==1?true:false;
+                    bool flag2 = Math.Sign(P2(ranges[i,0],e))==1?true:false;
+                    switch(flag1)
+                    {
+                        case true:
+                                if(flag2)
+                                {
+                                    do{
+                                        x0 = x0 - (F(x0)/(F(x0d)-F(x0)))*(x0d-x0);
+                                        x0d = x0d - (F(x0d)/P(x0d,e));
+                                        if(Math.Abs(x0d - x0)<e)
+                                        {
+                                            roots[i] = (x0+x0d)/2;
+                                        }
+                                    } while(true);
+                                }
+                                else
+                                {
+                                    do{
+                                        x0 = x0 - (Fminus(x0)/(Fminus(x0d)-Fminus(x0)))*(x0d-x0);
+                                        x0d = x0d - (Fminus(x0d)/Pminus(x0d,e));
+                                        if(Math.Abs(x0d - x0)<e)
+                                        {
+                                            roots[i] = (x0+x0d)/2;
+                                        }
+                                    } while(true);
+                                }
+                        case false:
+                            if(flag2)
+                            {
+                                    do{
+                                        x0 = x0 - (F(x0)/(F(x0d)-F(x0)))*(x0d-x0);
+                                        x0d = x0d - (F(x0d)/P(x0d,e));
+                                        if(Math.Abs(x0d - x0)<e)
+                                        {
+                                            roots[i] = (x0+x0d)/2;
+                                        }
+                                    } while(true);
+                            }
+                            else
+                            {
+                                do{
+                                    x0 = x0 - (Fminus(x0)/(Fminus(x0d)-Fminus(x0)))*(x0d-x0);
+                                    x0d = x0d - (Fminus(x0d)/Pminus(x0d,e));
+                                    if(Math.Abs(x0d - x0)<e)
+                                    {
+                                        roots[i] = (x0+x0d)/2;
+                                    }
+                                } while(true);
+                            }
+                                    
+                                
+                    }
+                }
+            return roots;
+        }
+
         private static double F(double x)
         {
             //You can change a formula here
-            return 4*Math.Pow(x,3)-2*Math.Pow(x,2)-2*x+4;
+            return Math.Pow(x,5)-x-0.2;
+            //You can change a formula here
+        }
+        private static double Fminus(double x)
+        {
+            //You can change a formula here
+            return -(Math.Pow(x,5)-x-0.2);
             //You can change a formula here
         }
     }
@@ -404,7 +531,7 @@ internal abstract class Program
     public static void Main()
     {
         const double e = 0.00001;
-        var range = Algorithms.Maths.FindRootRanges(-50,50,e);
+        var range = Algorithms.Maths.FindRootRanges(-100,100,e);
         var c=0;
         Console.Write("Ranges of roots are: \n");
         for(var i=0;i<range.GetLength(0); i++)
@@ -428,7 +555,7 @@ internal abstract class Program
             }
         }
         
-        var roots = Algorithms.Maths.FindRoots(ranges);
+        var roots = Algorithms.Maths.FindRootsNewton(ranges);
         for(var i=0; i<roots.GetLength(0);i++)
             Console.WriteLine("x"+(i+1)+": "+roots[i]+"\t");
     }
