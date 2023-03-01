@@ -4,6 +4,7 @@ using System.Linq;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Numerics;
 namespace Algorithms
 {
     internal abstract class Maths
@@ -465,7 +466,7 @@ namespace Algorithms
                                         {
                                             roots[i] = (x0+x0d)/2;
                                         }
-                                    } while(true);
+                                    } while(Math.Abs(x0d - x0)<e);
                                 }
                                 else
                                 {
@@ -476,8 +477,8 @@ namespace Algorithms
                                         {
                                             roots[i] = (x0+x0d)/2;
                                         }
-                                    } while(true);
-                                }
+                                    } while(Math.Abs(x0d - x0)<e);
+                                } break;
                         case false:
                             if(flag2)
                             {
@@ -488,7 +489,7 @@ namespace Algorithms
                                         {
                                             roots[i] = (x0+x0d)/2;
                                         }
-                                    } while(true);
+                                    } while(Math.Abs(x0d - x0)<e);
                             }
                             else
                             {
@@ -499,8 +500,8 @@ namespace Algorithms
                                     {
                                         roots[i] = (x0+x0d)/2;
                                     }
-                                } while(true);
-                            }
+                                } while(Math.Abs(x0d - x0)<e);
+                            } break;
                                     
                                 
                     }
@@ -511,15 +512,17 @@ namespace Algorithms
         private static double F(double x)
         {
             //You can change a formula here
-            return Math.Pow(x,5)-x-0.2;
+            return Math.Pow(x,2)-4;
             //You can change a formula here
         }
         private static double Fminus(double x)
         {
             //You can change a formula here
-            return -(Math.Pow(x,5)-x-0.2);
+            return -(Math.Pow(x,2)-4);
             //You can change a formula here
         }
+    
+    
     }
 
 
@@ -530,8 +533,14 @@ internal abstract class Program
 {
     public static void Main()
     {
+        Console.WriteLine("Choose a method to find roots: \n1.Newton's method \n2.Mixed method");
+        int method = Convert.ToInt32(Console.ReadLine());
+
+        Console.WriteLine("We'll find these roots!..");
+        
         const double e = 0.00001;
         var range = Algorithms.Maths.FindRootRanges(-100,100,e);
+
         var c=0;
         Console.Write("Ranges of roots are: \n");
         for(var i=0;i<range.GetLength(0); i++)
@@ -554,8 +563,14 @@ internal abstract class Program
                     ranges[i,j] = range[i,j];
             }
         }
-        
-        var roots = Algorithms.Maths.FindRootsNewton(ranges);
+        Console.WriteLine("Loading...");
+        double[] roots = new double[ranges.GetLength(0)];
+        switch(method)
+        {
+            case 1: roots = Algorithms.Maths.FindRootsMixed(ranges);break;
+            case 2: roots = Algorithms.Maths.FindRootsMixed(ranges);break;
+            default: Console.WriteLine("Something went wrong!"); Array.Fill(roots,0); break;
+        }        
         for(var i=0; i<roots.GetLength(0);i++)
             Console.WriteLine("x"+(i+1)+": "+roots[i]+"\t");
     }
