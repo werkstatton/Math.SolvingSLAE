@@ -296,6 +296,100 @@ namespace Algorithms
 
         }
 
+        public static double[,] FindOppositeMatrix(double[,] matrix)
+        {
+            var n = matrix.GetLength(0);
+            var matrix_clone = new double[n,n+n];
+            for(var i=0;i<n;i++)
+                for(var j=0;j<n;j++)
+                    matrix_clone[i,j]=matrix[i,j];
+            for(var i=0; i<n; i++)
+                for(var j=n;j<n+n;j++)
+                    if(i+n==j){matrix_clone[i,j]=1;}else{matrix_clone[i,j]=0;}
+
+            
+            for (var k = 0; k < n; k++) //k-номер строки
+            {
+                for (var i = 0; i < n+n; i++)//i-номер столбца
+                {
+                    var c = (((i-1)!=-1)||(i+1)>=(n))?(i-1):(i+1);
+                   if(matrix[k,k]==0)
+                   {
+                       var temp = new double[n+n];
+                       for(var r=0;r<n+n;r++)
+                       {
+                           temp[r] = matrix_clone[r,i];
+                           matrix_clone[r, i] = matrix_clone[r, c];
+                           matrix_clone[r, c] = temp[r];
+                           for (var y = 0; y < n; y++) //Обновление
+                                for (var j = 0; j < n; j++)
+                                    matrix[y, j] = matrix_clone[y, j];
+                       }
+                       matrix_clone[k, i] = matrix_clone[k, i] / matrix_clone[k, k]; //Деление k-строки на первый член
+                   }
+                   else {
+                       matrix_clone[k, i] = matrix_clone[k, i] / matrix[k, k]; //Деление k-строки на первый член
+                   }
+
+                }
+
+                for (int i = k + 1; i < n; i++) //i-номер следующей строки после k
+                {
+                    double conf = matrix_clone[i, k] / matrix_clone[k, k]; //Коэффициент
+                    for (int j = 0; j < n+n; j++) //j-номер столбца следующей строки после k
+                        matrix_clone[i, j] = matrix_clone[i, j] - matrix_clone[k, j] * conf; //Зануление элементов матрицы ниже первого члена, преобразованного в единицу
+                }
+                for (int i = 0; i < n; i++) //Обновление
+                    for (int j = 0; j < n; j++)
+                        matrix[i, j] = matrix_clone[i, j];
+            }
+
+            for (var k = n-1; k >= 0; k--) //k-номер строки
+            {
+                for (var i = 0; i < n+n; i++)//i-номер столбца
+                {
+                    var c = (((i-1)!=-1)||(i+1)>=(n))?(i-1):(i+1);
+                   if(matrix[k,k]==0)
+                   {
+                       var temp = new double[n+n];
+                       for(var r=0;r<n+n;r++)
+                       {
+                           temp[r] = matrix_clone[r,i];
+                           matrix_clone[r, i] = matrix_clone[r, c];
+                           matrix_clone[r, c] = temp[r];
+                           for (var y = 0; y < n; y++) //Обновление
+                                for (var j = 0; j < n; j++)
+                                    matrix[y, j] = matrix_clone[y, j];
+                       }
+                       matrix_clone[k, i] = matrix_clone[k, i] / matrix_clone[k, k]; //Деление k-строки на первый член
+                   }
+                   else {
+                       matrix_clone[k, i] = matrix_clone[k, i] / matrix[k, k]; //Деление k-строки на первый член
+                   }
+
+                }
+
+                for (int i = k-1; i >= 0; i--) //i-номер следующей строки после k
+                {
+                    double conf = matrix_clone[i, k] / matrix_clone[k, k]; //Коэффициент
+                    for (int j = 0; j < n+n; j++) //j-номер столбца следующей строки после k
+                        matrix_clone[i, j] = matrix_clone[i, j] - matrix_clone[k, j] * conf; //Зануление элементов матрицы ниже первого члена, преобразованного в единицу
+                }
+                for (int i = 0; i < n; i++) //Обновление
+                    for (int j = 0; j < n; j++)
+                        matrix[i, j] = matrix_clone[i, j];
+            }
+
+            for (var k = 0; k < n; k++)
+            {
+                for (var i = n; i <n+n; i++)
+                {
+                    matrix[k,i-n] = matrix_clone[k,i];
+                }
+            }
+            return matrix;
+        }
+
         private static double P(double x, double h)
         {
             var p = (F(x+h)-F(x-h))/(2*h);
@@ -515,16 +609,59 @@ namespace Algorithms
             return Math.Pow(x,2)-4;
             //You can change a formula here
         }
+        
         private static double Fminus(double x)
         {
             //You can change a formula here
             return -(Math.Pow(x,2)-4);
             //You can change a formula here
         }
-    
-    
-    }
+        
+        public static void findRoots()
+        {
+            Console.WriteLine("Choose a method to find roots: \n1.Newton's method \n2.Mixed method");
+            int method = Convert.ToInt32(Console.ReadLine());
 
+            Console.WriteLine("We'll find these roots!..");
+            
+            const double e = 0.00001;
+            var range = Algorithms.Maths.FindRootRanges(-100,100,e);
+
+            var c=0;
+            Console.Write("Ranges of roots are: \n");
+            for(var i=0;i<range.GetLength(0); i++)
+            {
+                for(var j=0; j<range.GetLength(1);j++){
+                    if(range[i,0]!=0 && range[i,1]!=0)
+                    {
+                        c++;
+                        Console.Write(range[i,j]+"\t");
+                    }
+                }
+                if(range[i,0]!=0)
+                    Console.Write("\n"); 
+            }
+            var ranges = new double[c/2,2];
+            for(var i=0;i<range.GetLength(0); i++)
+            {
+                for(var j=0; j<range.GetLength(1);j++){
+                    if(range[i,0]!=0 && range[i,1]!=0)
+                        ranges[i,j] = range[i,j];
+                }
+            }
+            Console.WriteLine("Loading...");
+            double[] roots = new double[ranges.GetLength(0)];
+            switch(method)
+            {
+                case 1: roots = Algorithms.Maths.FindRootsMixed(ranges);break;
+                case 2: roots = Algorithms.Maths.FindRootsMixed(ranges);break;
+                default: Console.WriteLine("Something went wrong!"); Array.Fill(roots,0); break;
+            }        
+            for(var i=0; i<roots.GetLength(0);i++)
+                Console.WriteLine("x"+(i+1)+": "+roots[i]+"\t");
+        }
+    }
+    
 
 }
 
@@ -533,45 +670,54 @@ internal abstract class Program
 {
     public static void Main()
     {
-        Console.WriteLine("Choose a method to find roots: \n1.Newton's method \n2.Mixed method");
-        int method = Convert.ToInt32(Console.ReadLine());
-
-        Console.WriteLine("We'll find these roots!..");
-        
-        const double e = 0.00001;
-        var range = Algorithms.Maths.FindRootRanges(-100,100,e);
-
-        var c=0;
-        Console.Write("Ranges of roots are: \n");
-        for(var i=0;i<range.GetLength(0); i++)
-        {
-            for(var j=0; j<range.GetLength(1);j++){
-                if(range[i,0]!=0 && range[i,1]!=0)
+        string matrixText;
+            var matrixTxtPath = @Path.Combine(Directory.GetCurrentDirectory(),"matrix.txt");
+            if (File.Exists(matrixTxtPath))
+            {
+                matrixText = File.ReadAllText(matrixTxtPath);
+            }
+            else
+            {
+                using (var fs = File.Create(matrixTxtPath))     
+                {    
+                    // Add some text to file    
+                    var title = new UTF8Encoding(true).GetBytes(
+                        "1 0 0\n 1 0 1\n 1 0 0");    
+                    fs.Write(title, 0, title.Length);
+                }    
+                matrixText = File.ReadAllText(matrixTxtPath);
+            }
+            Console.WriteLine("If you want to change matrix, go to "+matrixTxtPath);
+            var n = Regex.Matches(matrixText,"\n").Count+1;
+            var matrix = new double[n, n];
+            var line = 0;
+            foreach (var row in matrixText.Split('\n'))
+            {
+                var column = 0;
+                foreach (var col in row.Trim().Split(' '))
                 {
-                    c++;
-                    Console.Write(range[i,j]+"\t");
+                    matrix[line, column] = double.Parse(col.Trim());
+                    column++;
                 }
+                line++;
             }
-            if(range[i,0]!=0)
-                Console.Write("\n"); 
-        }
-        var ranges = new double[c/2,2];
-        for(var i=0;i<range.GetLength(0); i++)
-        {
-            for(var j=0; j<range.GetLength(1);j++){
-                if(range[i,0]!=0 && range[i,1]!=0)
-                    ranges[i,j] = range[i,j];
+        
+            for (var k = 0; k < n; k++)
+            {
+                for (var i = 0; i <n; i++)
+                {
+                    Console.Write(matrix[k,i]+" ");
+                } Console.Write("\n");
+            } //Создаём и печатаем новую матрицу
+
+            Console.WriteLine("\nOpposite matrix is:");
+            var answer = Algorithms.Maths.FindOppositeMatrix(matrix);   
+            for(var i=0;i<answer.GetLength(0); i++)
+            {
+                for(var j=0;j<answer.GetLength(1);j++)
+                {
+                    Console.Write(answer[i,j]+" ");
+                } Console.WriteLine();
             }
-        }
-        Console.WriteLine("Loading...");
-        double[] roots = new double[ranges.GetLength(0)];
-        switch(method)
-        {
-            case 1: roots = Algorithms.Maths.FindRootsMixed(ranges);break;
-            case 2: roots = Algorithms.Maths.FindRootsMixed(ranges);break;
-            default: Console.WriteLine("Something went wrong!"); Array.Fill(roots,0); break;
-        }        
-        for(var i=0; i<roots.GetLength(0);i++)
-            Console.WriteLine("x"+(i+1)+": "+roots[i]+"\t");
     }
 }
